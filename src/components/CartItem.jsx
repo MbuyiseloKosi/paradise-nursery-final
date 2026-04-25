@@ -1,25 +1,80 @@
-// src/components/CartItem.jsx
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { incrementQuantity, decrementQuantity, removeItem } from '../store/cartSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateQuantity, removeItem } from './store/CartSlice'; // Adjust path if your folder structure is different
+import { Link } from 'react-router-dom';
 
-const CartItem = ({ item }) => {
+const CartItem = () => {
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+
+  const totalAmount = cartItems.reduce((total, item) => {
+    return total + (item.price * item.quantity);
+  }, 0);
+
+  const handleIncrease = (item) => {
+    dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
+  };
+
+  const handleDecrease = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem(item.id));
+    }
+  };
+
+  const handleDelete = (id) => {
+    dispatch(removeItem(id));
+  };
+
+  const handleCheckout = () => {
+    alert("Coming Soon");
+  };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ddd', padding: '1rem', marginBottom: '1rem', borderRadius: '8px', background: '#fff', flexWrap: 'wrap', gap: '10px' }}>
-      <img src={item.image} alt={item.name} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }} />
-      <div style={{ flex: 1, minWidth: '150px' }}>
-        <h3 style={{ margin: '0 0 5px 0', fontSize: '1.1rem' }}>{item.name}</h3>
-        <p style={{ margin: '0', color: '#666', fontSize: '0.9rem' }}>Unit Price: ${item.price.toFixed(2)}</p>
-        <p style={{ margin: '5px 0 0 0', fontWeight: 'bold', color: '#4CAF50' }}>Total: ${(item.price * item.quantity).toFixed(2)}</p>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <button onClick={() => dispatch(decrementQuantity({ id: item.id }))} style={{ padding: '5px 10px', cursor: 'pointer', background: '#eee', border: 'none', borderRadius: '4px' }}>-</button>
-        <span style={{ width: '30px', textAlign: 'center', fontWeight: 'bold' }}>{item.quantity}</span>
-        <button onClick={() => dispatch(incrementQuantity({ id: item.id }))} style={{ padding: '5px 10px', cursor: 'pointer', background: '#eee', border: 'none', borderRadius: '4px' }}>+</button>
-        <button onClick={() => dispatch(removeItem({ id: item.id }))} style={{ background: '#ff4d4d', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>Delete</button>
-      </div>
+    <div style={{ padding: '20px' }}>
+      <h1>Your Shopping Cart</h1>
+      
+      {cartItems.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <>
+          <div>
+            {cartItems.map((item) => (
+              <div key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+                <img src={item.image} alt={item.name} style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '15px' }} />
+                <div style={{ flex: 1 }}>
+                  <h3>{item.name}</h3>
+                  <p>Unit Price: ${item.price}</p>
+                  <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <button onClick={() => handleDecrease(item)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleIncrease(item)}>+</button>
+                  </div>
+                  
+                  <button 
+                    className="cart-item-delete" 
+                    onClick={() => handleDelete(item.id)}
+                    style={{ marginLeft: '20px', backgroundColor: 'red', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '20px', borderTop: '2px solid #333', paddingTop: '20px' }}>
+            <h2>Total Amount: ${totalAmount.toFixed(2)}</h2>
+            <button onClick={handleCheckout} style={{ marginRight: '10px', padding: '10px 20px' }}>Checkout</button>
+            <Link to="/plants">
+              <button style={{ padding: '10px 20px' }}>Continue Shopping</button>
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 };

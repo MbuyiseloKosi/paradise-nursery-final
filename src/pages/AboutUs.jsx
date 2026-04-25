@@ -1,13 +1,18 @@
-// src/pages/AboutUs.jsx
 import React from 'react';
 
 const AboutUs = () => {
   return (
-    <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto', color: '#fff' }}>
-      <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-        Welcome to <strong>Paradise Nursery</strong>, your premier destination for bringing nature into your home. 
-        We specialize in hardy, beautiful houseplants that improve air quality and boost your mood. 
-        Our expert care guides ensure your green companions thrive for years to come.
+    <div className="about-us-container">
+      <h1>About Paradise Nursery</h1>
+      <p>
+        Welcome to Paradise Nursery, your trusted source for high-quality houseplants. 
+        Our mission is to bring nature into your home and improve your well-being through 
+        the beauty of indoor gardening. We offer a wide variety of unique plants, 
+        expert care advice, and a seamless shopping experience.
+      </p>
+      <p>
+        Whether you are a seasoned botanist or a beginner, our team is dedicated to 
+        helping you find the perfect plant for your space.
       </p>
     </div>
   );
